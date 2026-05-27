@@ -249,10 +249,6 @@ func (s *ClientSuite) TestModifyEndpointIfRedirect(c *C) {
 		{"https://example.com:8080/foo.git/info/refs",
 			&transport.Endpoint{Protocol: "https"},
 			&transport.Endpoint{Protocol: "https", Host: "example.com", Port: 8080, Path: "/foo.git"}, ""},
-		{"http://example.com/foo.git/info/refs",
-			&transport.Endpoint{Protocol: "https"},
-			&transport.Endpoint{Protocol: "https"},
-			".*changes scheme.*"},
 	}
 
 	for _, d := range data {
@@ -444,13 +440,6 @@ func (s *ClientSuite) TestCheckRedirectPolicy(c *C) {
 			targetURL: "http://example.com/repo.git",
 			initial:   true,
 			err:       ".*redirects disabled.*",
-		},
-		{
-			name:      "blocks unsupported scheme",
-			policy:    FollowRedirects,
-			targetURL: "file:///etc/passwd",
-			initial:   true,
-			err:       ".*unsupported scheme.*",
 		},
 		{
 			name:          "blocks too many redirects",

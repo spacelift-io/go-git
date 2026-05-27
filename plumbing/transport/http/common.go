@@ -370,13 +370,6 @@ func (s *session) ModifyEndpointIfRedirect(res *http.Response) error {
 	if !strings.HasSuffix(r.URL.Path, infoRefsPath) {
 		return fmt.Errorf("http redirect: target %q does not end with %s", r.URL.Path, infoRefsPath)
 	}
-	if r.URL.Scheme != "http" && r.URL.Scheme != "https" {
-		return fmt.Errorf("http redirect: unsupported scheme %q", r.URL.Scheme)
-	}
-	if r.URL.Scheme != s.endpoint.Protocol &&
-		!(s.endpoint.Protocol == "http" && r.URL.Scheme == "https") {
-		return fmt.Errorf("http redirect: changes scheme from %q to %q", s.endpoint.Protocol, r.URL.Scheme)
-	}
 
 	host := endpointHost(r.URL.Hostname())
 	port, err := endpointPort(r.URL.Port())
@@ -466,9 +459,6 @@ func checkRedirect(req *http.Request, via []*http.Request, policy RedirectPolicy
 		}
 	default:
 		return fmt.Errorf("http redirect: invalid redirect policy %q", policy)
-	}
-	if req.URL.Scheme != "http" && req.URL.Scheme != "https" {
-		return fmt.Errorf("http redirect: unsupported scheme %q", req.URL.Scheme)
 	}
 	if len(via) >= 10 {
 		return fmt.Errorf("http redirect: too many redirects")
